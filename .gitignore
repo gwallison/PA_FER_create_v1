@@ -1,0 +1,23 @@
+# Data
+data/
+*.csv
+*.parquet
+*.parquet.*
+*.parquet_tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Project
+scripts/research_pads.py
+scripts/check_names.py
+scripts/analyze_unmatched.py
+
+# Temp
+.gemini/
+tmp/
