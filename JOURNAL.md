@@ -39,4 +39,5 @@
 ## 2026-04-18: WellPad Clustering Considerations
 - **Insight:** Clustering is primarily intended to treat similar wells that are geographically close as a single functional group (the "Pad"). This grouping is most meaningful for active, recently drilled, or recently active wells.
 - **Challenge:** We must determine how to handle inactive or historic wells (Spud < 2000) that are near these groups. Should they be absorbed into the modern pad entity, or do they represent a distinct legacy infrastructure layer?
+- **Idea:** It might be useful to implement a secondary `Site_ID` based on pure spatial clustering, regardless of company ownership. This would provide a long-term "historical record" for a particular location across different operators and eras.
 - **Goal:** Ensure the Master Facility List distinguishes between modern operational clusters and legacy sites to keep downstream resolution accurate.
