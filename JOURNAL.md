@@ -32,6 +32,11 @@
 ### Next Steps
 - **Validation:** Visual inspection of cluster centroids and name token accuracy.
 - **Geocoding Expansion:** Continue processing the remaining ~3,000 unique F26R addresses.
-- **Master List Enrichment:** Join additional metadata (County, Municipality) to synthesized facilities.
+- **Master List Enrichment:** Join additional metadata (County, Municipality) to synthesized facilities.        
 
 ---
+
+## 2026-04-18: WellPad Clustering Considerations
+- **Insight:** Clustering is primarily intended to treat similar wells that are geographically close as a single functional group (the "Pad"). This grouping is most meaningful for active, recently drilled, or recently active wells.
+- **Challenge:** We must determine how to handle inactive or historic wells (Spud < 2000) that are near these groups. Should they be absorbed into the modern pad entity, or do they represent a distinct legacy infrastructure layer?
+- **Goal:** Ensure the Master Facility List distinguishes between modern operational clusters and legacy sites to keep downstream resolution accurate.
