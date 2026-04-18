@@ -10,14 +10,19 @@
 - **Solution:** Clustered 223,768 DEP wells into **106,611 "Virtual Pads"** using Agglomerative Clustering (400m threshold) constrained by CER `Parent_ID`.
 - **Result:** Created the foundation for the Master Facility List (MFL).
 
-#### 2. F26R Coordinate Recovery
-- **Tier 1 Extraction:** Identified 858 records with high-precision coordinates in raw text fields.
-- **Tier 2 Geocoding:** Initialized a rate-limited geocoding pipeline via Nominatim, processing 388 unique addresses to recover spatial locations for several thousand waste records.
-
-#### 3. Multi-Pass Facility Resolution
-- **Pass 1 (Strict):** Linked 10,121 records using exact `Parent_ID` and name token overlap.
-- **Pass 2 (Relaxed Spatial):** Linked an additional 1,899 records by ignoring operator mismatches within 500m of known facilities (capturing acquisitions/contractors).
-- **Pass 3 (Synthesis):** For the remaining 23,936 records, synthesized **6,868 new Master Facilities** from F26R metadata to ensure 100% data coverage.
+#### 2. Canonical F26R Origin Resolution (Updated 2026-04-18)
+- **Strategy Shift:** Moved from individual record resolution to "Filename-level Canonical Origins." Each F26R file represents a single source event; deduplicating at this level increased precision and efficiency.
+- **Improved Parsing:** Enhanced `waste_location` parsing to handle complex patterns:
+    - Coordinate extraction (Lat/Lon) directly from text.
+    - Street address extraction using keyword-aware regex (Road, Rd, Turnpike, etc.).
+    - Parentheses handling (e.g., "(Pad Name) Address").
+    - Noise cleaning (removing emails, phone numbers, and form boilerplate).
+- **Evidence Fusion:** Implemented a multi-pass resolution logic that prioritizes:
+    1. Direct extracted coordinates + Parent ID.
+    2. Geocoded addresses + Parent ID.
+    3. Spatial proximity only (for acquisitions).
+    4. Fuzzy name token matching + Parent ID.
+- **Linkage Achievement:** **12,685 out of 13,464 unique origin files linked (94.2%)**.
 
 ### Key Metrics
 | Metric | Count |
@@ -25,14 +30,15 @@
 | **Total Master Facilities** | **113,479** |
 | - From DEP Inventory | 106,611 |
 | - Synthesized from F26R | 6,868 |
-| **F26R Linkage Rate** | **100% (All 35,956 records)** |
-| - Linked to DEP Pads | 12,020 (33.4%) |
-| - Linked to Synth Pads | 23,936 (66.6%) |
+| **F26R Linkage Rate (Origin Files)** | **94.2% (12,685 / 13,464)** |
+| - Pass 1 (Parent + Spatial) | 1,399 |
+| - Pass 2 (Spatial Only) | 557 |
+| - Pass 3 (Parent + Name) | 10,729 |
 
 ### Next Steps
-- **Validation:** Visual inspection of cluster centroids and name token accuracy.
-- **Geocoding Expansion:** Continue processing the remaining ~3,000 unique F26R addresses.
-- **Master List Enrichment:** Join additional metadata (County, Municipality) to synthesized facilities.        
+- **Unlinked Analysis:** Triage the remaining 779 unlinked files.
+- **Streamlit Verification:** Use the newly created `verify_pads_app.py` to visually confirm high-confidence vs. relaxed spatial matches.
+- **Master List Enrichment:** Finalize county/municipality metadata for synthesized facilities.
 
 ---
 
