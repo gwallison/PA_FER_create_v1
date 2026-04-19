@@ -97,7 +97,9 @@ def prepare_origins():
     origins = df.groupby('filename').agg({
         'waste_location': 'first',
         'company_name': 'first',
-        'date_prepared': 'first'
+        'date_prepared': 'first',
+        'set_name': 'first',
+        'page_number': 'first'
     }).reset_index()
     
     print("Parsing waste_location...")
