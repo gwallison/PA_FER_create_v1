@@ -9,7 +9,7 @@ def clean_name_token(name):
     if not isinstance(name, str): return ""
     # Remove common suffixes and numbers
     n = name.upper()
-    n = re.sub(r'\b(WELL|PAD|UNIT|IMPOUNDMENT|STATION|COMPRESSOR|ROAD|RD|TRACT|COP)\b', ' ', n)
+    n = re.sub(r'\b(WELL|PAD|UNIT|IMPOUNDMENT|STATION|COMPRESSOR|ROAD|RD|TRACT|COP|WELLPAD)\b', ' ', n)
     n = re.sub(r'\d+', ' ', n) # Remove numbers
     n = re.sub(r'[^A-Z ]', ' ', n) # Remove punctuation
     tokens = [t for t in n.split() if len(t) > 2] # Only keep meaningful words

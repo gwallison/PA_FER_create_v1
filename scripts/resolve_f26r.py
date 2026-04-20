@@ -9,8 +9,23 @@ def clean_f26r_name(text):
     # Remove coordinates if present
     t = re.sub(r'[34][0-9]\.\d{3,}\s*[,/ ]\s*-?[78][0-9]\.\d{3,}', ' ', text)
     t = t.upper()
+    
+    # Remove common boilerplate sentences
+    boilerplate = [
+        r'EMPTY CONTAINERS ARE A RESIDUAL WASTE.*',
+        r'GLYCOLS / ANTIFREEZE ARE A RESIDUAL WASTE.*',
+        r'THE PRODUCED BRINE WATER IS STORED.*',
+        r'NORMAL OPERATION AND MAINTENANCE ACTIVITIES.*',
+        r'GENERATED DURING NORMAL OPERATION.*',
+        r'WASTE IS STORMWATER FROM DIRECT PRECIPITATION.*',
+        r'WASTE (?:IS|ARE) (?:A )?RESIDUAL WASTE.*',
+        r'LOCATED AT.*'
+    ]
+    for pattern in boilerplate:
+        t = re.sub(pattern, ' ', t)
+
     # Broad cleanup of common functional words
-    t = re.sub(r'\b(WELL|PAD|UNIT|IMPOUNDMENT|STATION|COMPRESSOR|ROAD|RD|TRACT|COP|ORIGIN|GENERATOR|SITE|FACILITY|LOC|LOCATION)\b', ' ', t)
+    t = re.sub(r'\b(WELL|PAD|UNIT|IMPOUNDMENT|STATION|COMPRESSOR|ROAD|RD|TRACT|COP|ORIGIN|GENERATOR|SITE|FACILITY|LOC|LOCATION|WELLPAD)\b', ' ', t)
     t = re.sub(r'\d+', ' ', t)
     t = re.sub(r'[^A-Z ]', ' ', t)
     tokens = [tok for tok in t.split() if len(tok) > 2]
@@ -26,7 +41,7 @@ def resolve_relaxed():
     cer = pd.read_csv('data/raw/cer_lookup.csv')
 
     # Load geocoded cache if exists
-    cache_path = 'data/interim/geocode_cache.parquet'
+    cache_path = 'data/interim/geocode_cache_origins.parquet'
     if os.path.exists(cache_path):
         print("Loading geocoded coordinates...")
         geo_cache = pd.read_parquet(cache_path)

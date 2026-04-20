@@ -10,9 +10,11 @@ from geopy.extra.rate_limiter import RateLimiter
 
 st.set_page_config(layout="wide", page_title="F26R Unlinked Triage")
 
-# Initialize Session State for geocoded results
+# Initialize Session State
 if 'geocoded_coords' not in st.session_state:
     st.session_state.geocoded_coords = None
+if 'search_mode' not in st.session_state:
+    st.session_state.search_mode = "Name/County"
 
 def get_geocoder():
     # Priority: Google Maps API key from environment
@@ -123,6 +125,7 @@ with col1:
                     location = geocode(query)
                     if location:
                         st.session_state.geocoded_coords = f"{location.latitude}, {location.longitude}"
+                        st.session_state.search_mode = "Coordinates" # Auto-switch mode
                         st.success(f"Found via Google: {st.session_state.geocoded_coords}")
                         st.rerun()
                     else:
@@ -136,7 +139,17 @@ with col1:
 with col2:
     if selected_idx is not None:
         st.subheader("Search Master Facility List")
-        search_mode = st.radio("Search Mode", ["Name/County", "Coordinates", "Direct ID"], horizontal=True)
+        
+        # Use session_state to control the radio button
+        modes = ["Name/County", "Coordinates", "Direct ID"]
+        search_mode = st.radio("Search Mode", modes, 
+                               index=modes.index(st.session_state.search_mode),
+                               horizontal=True,
+                               key="search_mode_radio")
+        
+        # Update session state if user manually clicks
+        st.session_state.search_mode = search_mode
+        
         results = mfl
         
         # Determine base coordinates for the case
